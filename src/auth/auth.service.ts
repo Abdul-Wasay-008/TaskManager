@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User, UserDocument } from "./user.schema";
 import { SignupDto } from "./dto/signup.dto";
+import { LoginDto } from "./dto/login.dto";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
@@ -26,5 +27,24 @@ export class AuthService {
 
         // Save user to MongoDB
         return newUser.save();
+    }
+
+    //Login System
+    async Login(loginDto: LoginDto): Promise<{ message: string }> {
+        const { email, password } = loginDto;
+
+        // Find the user by email
+        const user = await this.userModel.findOne({ email });
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Compare the password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            throw new Error('Invalid credentials');
+        }
+
+        return { message: 'Login successful' };
     }
 }
