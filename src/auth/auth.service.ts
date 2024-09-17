@@ -5,11 +5,14 @@ import { User, UserDocument } from "./user.schema";
 import { SignupDto } from "./dto/signup.dto";
 import { LoginDto } from "./dto/login.dto";
 import * as bcrypt from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
+
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
+        private jwtService: JwtService,
     ) { }
 
     async Signup(signupDto: SignupDto): Promise<User> {
@@ -30,7 +33,7 @@ export class AuthService {
     }
 
     //Login System
-    async Login(loginDto: LoginDto): Promise<{ message: string }> {
+    async Login(loginDto: LoginDto): Promise<{}> {
         const { email, password } = loginDto;
 
         // Find the user by email
@@ -45,6 +48,10 @@ export class AuthService {
             throw new Error('Invalid credentials');
         }
 
-        return { message: 'Login successful' };
+        // Generate JWT token
+        const payload = { email: user.email, password: user.password }; 
+        const token = this.jwtService.sign(payload);
+
+        return { token, message: "Login Successful" };
     }
 }
