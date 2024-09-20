@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { User, UserDocument } from "./user.schema";
+import { User, UserDocument } from "./schemas/user.schema";
 import { SignupDto } from "./dto/signup.dto";
 import { LoginDto } from "./dto/login.dto";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
+
 
 
 @Injectable()
@@ -15,6 +16,7 @@ export class AuthService {
         private jwtService: JwtService,
     ) { }
 
+    //Signup System
     async Signup(signupDto: SignupDto): Promise<User> {
         const { name, email, password } = signupDto;
 
@@ -49,9 +51,10 @@ export class AuthService {
         }
 
         // Generate JWT token
-        const payload = { email: user.email, password: user.password }; 
+        const payload = { email: user.email, password: user.password };
         const token = this.jwtService.sign(payload);
 
         return { token, message: "Login Successful" };
     }
+
 }

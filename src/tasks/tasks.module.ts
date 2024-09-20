@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
+import { TasksController } from './tasks.controller';
+import { TasksService } from './tasks.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './schemas/user.schema';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { Task, TaskSchema } from './schemas/task.schema';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -12,12 +12,10 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '1h' },
     }),
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-    ]),
+      { name: Task.name, schema: TaskSchema },
+  ]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [TasksController],
+  providers: [TasksService]
 })
-export class AuthModule { }
-
-
+export class TasksModule {}
